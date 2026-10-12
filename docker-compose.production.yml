@@ -1,0 +1,20 @@
+services:
+  ollama:
+    build:
+      context: ./ollama
+    restart: unless-stopped
+    environment:
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen3.5:4b}
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/ollama-ready && ollama list >/dev/null 2>&1"]
+      interval: 20s
+      timeout: 10s
+      retries: 60
+      start_period: 30s
+
+volumes:
+  ollama_models:

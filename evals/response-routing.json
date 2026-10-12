@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0",
+  "suite": "response-routing",
+  "description": "Question-intent classification for plain-text responses.",
+  "cases": []
+}

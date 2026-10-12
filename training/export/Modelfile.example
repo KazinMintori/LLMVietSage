@@ -1,0 +1,2 @@
+# Replace this path with the GGUF converted from your compatible merged checkpoint.
+FROM ./trained-model.gguf

@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0",
+  "suite": "context-and-controls",
+  "description": "Conversation context and controls for plain-text chat.",
+  "cases": []
+}

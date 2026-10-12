@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "suite": "streaming",
+  "description": "Generation-only evaluation; no retrieval, database or browser calls.",
+  "cases": [
+    {
+      "id": "model-stream-has-no-sources-event",
+      "mode": "offline",
+      "probe": "sse_event_contract",
+      "input": {
+        "events": [
+          "token",
+          "done"
+        ]
+      },
+      "assertions": [
+        {
+          "op": "not_contains",
+          "path": "events",
+          "value": "sources"
+        }
+      ],
+      "bug": {
+        "status": "regression_guard",
+        "root_cause": "Raw retrieval sources remain internal and must not become a public SSE presentation event."
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VietSage supervised text conversation",
+  "type": "object",
+  "required": ["id", "source_id"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "synthetic": {"type": "boolean", "default": false},
+    "question": {"type": "string", "minLength": 1},
+    "context": {"type": "string"},
+    "answer": {"type": "string", "minLength": 1},
+    "messages": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["role", "content"],
+        "additionalProperties": false,
+        "properties": {
+          "role": {"enum": ["system", "user", "assistant"]},
+          "content": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "anyOf": [{"required": ["messages"]}, {"required": ["question", "answer"]}]
+}

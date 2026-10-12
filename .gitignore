@@ -1,0 +1,30 @@
+# Môi trường và tệp máy tự sinh. Các tệp này tái tạo được, và vì là nhị phân nên
+# khi hai người cùng commit sẽ gây xung đột merge không giải bằng tay được.
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.env
+.env.*
+!.env.example
+!.env.rag.example
+
+# Log và dữ liệu chạy thử.
+runtime/
+
+# Cơ sở dữ liệu và chỉ mục tạm của các công cụ RAG cũ; không đưa dữ liệu runtime vào Git.
+data/chroma/
+data/*.db
+data/*.db-*
+
+# Offline training state; only examples and reference fixtures are versioned.
+/training/data/raw/*
+!/training/data/raw/.gitkeep
+/training/data/prepared/*
+!/training/data/prepared/.gitkeep
+/training/models/*
+!/training/models/.gitkeep
+/training/artifacts/*
+!/training/artifacts/.gitkeep

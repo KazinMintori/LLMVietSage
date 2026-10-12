@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0",
+  "suite": "loading-state",
+  "description": "A visible assistant loading state appears immediately while a response is pending and transitions cleanly when the stream completes.",
+  "cases": []
+}

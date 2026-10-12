@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0",
+  "suite": "normal-chat",
+  "description": "Generation-only evaluation; no retrieval, database or browser calls.",
+  "cases": [
+    {
+      "id": "normal-chat-omitted-locale-preserves-current-language",
+      "mode": "offline",
+      "probe": "response_guidance",
+      "input": {
+        "message": "What time does breakfast start?",
+        "fallback_locale": "vi"
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "locale",
+          "value": "en"
+        },
+        {
+          "op": "equals",
+          "path": "language_requested",
+          "value": false
+        },
+        {
+          "op": "contains",
+          "path": "guidance",
+          "value": "Write the answer in English"
+        }
+      ],
+      "bug": {
+        "status": "regression_guard",
+        "root_cause": "When a request omits a locale field, current-turn language evidence must preserve English instead of resetting to the UI locale."
+      }
+    },
+    {
+      "id": "normal-chat-explicit-language-overrides-ui-locale",
+      "mode": "offline",
+      "probe": "response_guidance",
+      "input": {
+        "message": "Please answer in English, briefly and in a casual tone.",
+        "fallback_locale": "zh-Hans"
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "locale",
+          "value": "en"
+        },
+        {
+          "op": "equals",
+          "path": "language_requested",
+          "value": true
+        },
+        {
+          "op": "equals",
+          "path": "detail",
+          "value": "concise"
+        },
+        {
+          "op": "equals",
+          "path": "tone",
+          "value": "casual"
+        }
+      ],
+      "bug": {
+        "status": "regression_guard",
+        "root_cause": "An explicit language request must override the selected UI locale while preserving requested detail and tone."
+      }
+    },
+    {
+      "id": "normal-chat-definition-does-not-add-unrelated-offer",
+      "mode": "offline",
+      "probe": "response_guidance",
+      "input": {
+        "message": "What is Wi-Fi?",
+        "fallback_locale": "en"
+      },
+      "assertions": [
+        {
+          "op": "contains",
+          "path": "guidance",
+          "value": "Address the latest request first"
+        },
+        {
+          "op": "not_contains",
+          "path": "guidance",
+          "value": "hotel upsell"
+        },
+        {
+          "op": "not_contains",
+          "path": "guidance",
+          "value": "unrelated offer"
+        }
+      ],
+      "bug": {
+        "status": "contract_guard",
+        "root_cause": "Prompt policy must prioritize a definition request and avoid unrelated hotel offers; model prose quality is measured separately in controlled live evidence."
+      }
+    },
+    {
+      "id": "normal-chat-live-quality-explicitly-skipped",
+      "mode": "live",
+      "probe": "live_provider",
+      "input": {
+        "message": "Give a natural answer with no fixed greeting.",
+        "locale": "en"
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "status",
+          "value": "skipped"
+        }
+      ],
+      "bug": {
+        "status": "live_quality_pending",
+        "root_cause": "Provider quality requires an explicit model, seed, latency budget, and human-approved reference corpus."
+      },
+      "adapter": {
+        "status": "pending_reviewed_provider_adapter",
+        "runner_behavior": "skip_without_adapter",
+        "strict_flag": "--require-live"
+      },
+      "rubric": {
+        "must": [
+          "answer the current request first",
+          "honor the requested language and detail",
+          "avoid unrelated hotel offers",
+          "use only directly supported grounded facts for plans"
+        ],
+        "severity": "manual_quality_gate",
+        "evidence_ref": "docs/human/evidence/CHAT_QUALITY_2026-09-20.json"
+      }
+    },
+    {
+      "id": "model-inference-context-forwarded",
+      "mode": "offline",
+      "probe": "inference_prompt",
+      "input": {
+        "message": "Reference supplied: the fictional museum opens at 09:00. Question: when does it open?"
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "last_user_content",
+          "value": "Reference supplied: the fictional museum opens at 09:00. Question: when does it open?"
+        },
+        {
+          "op": "equals",
+          "path": "roles",
+          "value": [
+            "system",
+            "user"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "model-inference-caller-history",
+      "mode": "offline",
+      "probe": "inference_prompt",
+      "input": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "My name is Linh."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Linh."
+          },
+          {
+            "role": "user",
+            "content": "What is my name?"
+          }
+        ]
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "history_count",
+          "value": 2
+        },
+        {
+          "op": "equals",
+          "path": "last_user_content",
+          "value": "What is my name?"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+.env
+.env.*
+!.env.example
+!.env.rag.example
+.git
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.coverage
+runtime
+tmp
+data/chroma
+data/*.db
+data/*.db-*
+tests
+
+# Source corpora are not part of the model container build.
+data/*.pdf
+data/**/*.pdf
+*.rar
+*.zip
+*.7z
+*.tar.gz

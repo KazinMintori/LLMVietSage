@@ -1,0 +1,25 @@
+name: Verify inference
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: sh -n ollama/start-ollama.sh
+      - run: python -B scripts/verify_architecture.py --report runtime/architecture-check.json
+      - run: python -B scripts/run_inference_tests.py
+      - run: python -B -m unittest discover -s tests -v
+      - run: python -B -m unittest discover -s training/tests -v
+      - run: python -B scripts/run_evals.py --mode offline --report runtime/generation-evals.json

@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0",
+  "suite": "markdown-rendering",
+  "description": "Successful assistant text renders safe markdown in the real DOM without exposing escaped markers or unsafe HTML.",
+  "cases": []
+}

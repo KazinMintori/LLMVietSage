@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "suite": "response-routing",
+  "description": "Question-intent classification for plain-text responses.",
+  "cases": [
+    {
+      "id": "routing-simple-question-text",
+      "mode": "offline",
+      "probe": "route",
+      "input": {
+        "message": "Địa chỉ này ở đâu?"
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "context",
+          "value": "simple_answer"
+        }
+      ]
+    },
+    {
+      "id": "routing-itinerary-text",
+      "mode": "offline",
+      "probe": "route",
+      "input": {
+        "message": "Lập lịch trình Hội An trong 5 ngày"
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "context",
+          "value": "travel_itinerary"
+        }
+      ]
+    },
+    {
+      "id": "routing-address-does-not-match-add",
+      "mode": "offline",
+      "probe": "route",
+      "input": {
+        "message": "Please address this issue"
+      },
+      "assertions": [
+        {
+          "op": "equals",
+          "path": "context",
+          "value": "simple_answer"
+        }
+      ]
+    }
+  ]
+}
